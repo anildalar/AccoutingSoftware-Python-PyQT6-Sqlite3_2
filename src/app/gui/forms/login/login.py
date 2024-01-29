@@ -1,37 +1,34 @@
-import os
-from PyQt6.QtWidgets import QApplication, QDialog
-from PyQt6.uic import loadUi
+from PyQt6.QtWidgets import QGridLayout,QWidget,QLabel,QLineEdit,QApplication, QMainWindow, QPushButton, QVBoxLayout, QDialog
 
-#1. Class defination
-class LoginForm(QDialog):
-    #1. Property
+
+class LoginForm(QWidget):
+    #1. Property/Variables/State
     
     #2. Constructor
     def __init__(self):
-        super().__init__()
-        # Print the current working directory
-        print("Current working directory before change:", os.getcwd())
-        print(__file__)
-        print(os.path.abspath(__file__))
-        #path=os.getcwd()
-        print(os.path.dirname(__file__))
-        print("Current working directory after change", os.path.dirname(__file__))
-        #path += '/src/app/gui/forms/login/login.ui'
-        #loadUi(path, self)
+        super().__init__()# We are calling the parent constructor
+        self.init_ui()
+        pass
+    
+    def init_ui(self):
+        layout = QVBoxLayout()
 
-        #self.pushButtonLogin.clicked.connect(self.on_login_button_click)
+        label_username = QLabel('Username:')
+        self.edit_username = QLineEdit()
 
-    #3. Method
-    def on_login_button_click(self):
-        username = self.lineEditUsername.text()
-        password = self.lineEditPassword.text()
+        label_password = QLabel('Password:')
+        self.edit_password = QLineEdit()
+        self.edit_password.setEchoMode(QLineEdit.EchoMode.Password)
 
-        # Add your login logic here
-        print(f"Username: {username}, Password: {password}")
+        btn_register = QPushButton('Login')
+        #btn_register.clicked.connect(self.register_clicked)
 
-if __name__ == "__main__":
-    app = QApplication([])
-    #2. create class external object/Class instantiation
-    login_form = LoginForm()
-    login_form.show()
-    app.exec()
+        layout.addWidget(label_username)
+        layout.addWidget(self.edit_username)
+        layout.addWidget(label_password)
+        layout.addWidget(self.edit_password)
+        layout.addWidget(btn_register)
+
+        self.setLayout(layout)
+        pass
+    pass

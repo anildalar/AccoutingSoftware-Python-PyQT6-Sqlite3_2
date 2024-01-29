@@ -1,23 +1,42 @@
-from PyQt6.QtWidgets import QApplication, QDialog
-from PyQt6.uic import loadUi
+from PyQt6.QtWidgets import QGridLayout,QWidget,QLabel,QLineEdit,QApplication, QMainWindow, QPushButton, QVBoxLayout, QDialog
 
-class RegisterForm(QDialog):
+
+class RegisterForm(QWidget):
+    #1. Property/Variables/State
+    
+    #2. Constructor
     def __init__(self):
-        super().__init__()
-        loadUi("register.ui", self)
+        super().__init__()# We are calling the parent constructor
+        self.setStyleSheet("background-color:#eee")
+        self.init_ui()
+        pass
+    
+    def init_ui(self):
+        layout = QVBoxLayout()
 
-        self.pushButtonRegister.clicked.connect(self.on_register_button_click)
+        label_username = QLabel('Username:')
+        self.edit_username = QLineEdit()
 
-    def on_register_button_click(self):
-        username = self.lineEditUsername.text()
-        password = self.lineEditPassword.text()
-        confirm_password = self.lineEditConfirmPassword.text()
+        label_password = QLabel('Password:')
+        self.edit_password = QLineEdit()
+        self.edit_password.setEchoMode(QLineEdit.EchoMode.Password)
+        
+        label_cpassword = QLabel('Confirm Password:')
+        self.edit_cpassword = QLineEdit()
+        self.edit_cpassword.setEchoMode(QLineEdit.EchoMode.Password)
 
-        # Add your registration logic here
-        print(f"Username: {username}, Password: {password}, Confirm Password: {confirm_password}")
+        btn_register = QPushButton('Register')
+        #btn_register.clicked.connect(self.register_clicked)
 
-if __name__ == "__main__":
-    app = QApplication([])
-    register_form = RegisterForm()
-    register_form.show()
-    app.exec()
+        layout.addWidget(label_username)
+        layout.addWidget(self.edit_username)
+        layout.addWidget(label_password)
+        layout.addWidget(self.edit_password)
+        layout.addWidget(label_cpassword)
+        layout.addWidget(self.edit_cpassword)
+        layout.addWidget(btn_register)
+
+        self.setLayout(layout)
+        pass
+    #3. Method/Function/Behaviours
+    pass
