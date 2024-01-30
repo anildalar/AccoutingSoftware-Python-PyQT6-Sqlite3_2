@@ -1,5 +1,6 @@
 from PyQt6.QtWidgets import QGridLayout,QWidget,QLabel,QLineEdit,QApplication, QMainWindow, QPushButton, QVBoxLayout, QDialog
 
+from lib.database import DatabaseManager
 
 class RegisterForm(QWidget):
     #1. Property/Variables/State
@@ -7,6 +8,7 @@ class RegisterForm(QWidget):
     #2. Constructor
     def __init__(self):
         super().__init__()# We are calling the parent constructor
+        self.db_manager = DatabaseManager()
         self.setStyleSheet("background-color:#eee")
         self.init_ui()
         pass
@@ -26,7 +28,7 @@ class RegisterForm(QWidget):
         self.edit_cpassword.setEchoMode(QLineEdit.EchoMode.Password)
 
         btn_register = QPushButton('Register')
-        #btn_register.clicked.connect(self.register_clicked)
+        btn_register.clicked.connect(self.register_clicked)
 
         layout.addWidget(label_username)
         layout.addWidget(self.edit_username)
@@ -39,4 +41,20 @@ class RegisterForm(QWidget):
         self.setLayout(layout)
         pass
     #3. Method/Function/Behaviours
+    def register_clicked(self):
+        username = self.edit_username.text()
+        password = self.edit_password.text()
+        cpassword = self.edit_cpassword.text()
+        print(username)
+        print(password)
+        print(cpassword)
+
+        if password == cpassword:
+                  # ceo.method(aa1,aa2)
+            if self.db_manager.register_user(username, password):#aa1,aa2
+                print("User registered successfully")
+            else:
+                print("Username already exists")
+        else:
+            print("Passwords do not match")
     pass

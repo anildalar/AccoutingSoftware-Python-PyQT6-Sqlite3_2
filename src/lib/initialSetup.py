@@ -2,6 +2,7 @@ import sqlite3
 import bcrypt
 
 #1. Function defination is one time process
+#self.db_manager = DatabaseManager()
 
 #1. DB Connection Open
 dbname='accounting.db'
