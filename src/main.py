@@ -1,5 +1,5 @@
 #from topmoudle.submodule import elem1,elem2,.....
-from lib.initialSetup import import_sql,checkIfAdminRegister
+from lib.database import DatabaseManager
 
 from PyQt6.QtWidgets import QGridLayout,QWidget,QLabel,QLineEdit,QApplication, QMainWindow, QPushButton, QVBoxLayout, QDialog
 from PyQt6.QtGui import QIcon
@@ -11,6 +11,7 @@ from app.gui.forms.register.register import RegisterForm
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
+        self.db = DatabaseManager()
         self.setWindowTitle('OKLABS Account Software 1.0.0')
         # Set window icon
         icon = QIcon("./src/assets/icon.png")  # Replace with the path to your icon file
@@ -19,7 +20,7 @@ class MainWindow(QMainWindow):
         
 
         #moduleName.method(aa1,aa2)
-        import_sql()
+        #import_sql()
         self.init_ui()#aa
         pass
         
@@ -31,7 +32,7 @@ class MainWindow(QMainWindow):
         # Create a layout for the central widget
         grid_layout = QGridLayout(central_widget)
         
-        if checkIfAdminRegister() :
+        if self.db.checkIfAdminRegister() :
             #ceo              = ClassName()
             login_form = LoginForm()
             self.setCentralWidget(login_form)

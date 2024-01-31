@@ -2,39 +2,51 @@ import sqlite3
 import bcrypt
 
 class DatabaseManager:
-    def __init__(self, db_name='./data/accounting.db'):# default paramater/argument
-        self.conn = sqlite3.connect(db_name)
+    #1. Property/Varible/State
+    dbname='accounting.db'
+    sqlfile='accounting.sql'
+    
+    #2. Constructor/Esp. Function/Method/
+    def __init__(self ):# default paramater/argument
+        self.conn = sqlite3.connect(f'./data/{self.dbname}')
         self.cur = self.conn.cursor()
         self.create_table()
         
+    #3. Method/Function/Behaviours
+   
     def create_table(self):
-        self.cur.execute('''
-                            CREATE TABLE IF NOT EXISTS users (
-                                id INTEGER PRIMARY KEY,
-                                username TEXT UNIQUE,
-                                password TEXT);
-                            CREATE TABLE IF NOT EXISTS customers ( 
-                                id   INTEGER PRIMARY KEY,
-                                name TEXT NOT NULL COLLATE NOCASE
-                            );
-                            CREATE TABLE IF NOT EXISTS suppliers ( 
-                                id   INTEGER PRIMARY KEY,
-                                name TEXT NOT NULL COLLATE NOCASE
-                            );
-                            CREATE TABLE IF NOT EXISTS items ( 
-                                id   INTEGER PRIMARY KEY,
-                                name TEXT NOT NULL COLLATE NOCASE
-                            );
-                        ''')
-        self.conn.commit()
-    def checkIfAdminRegister():
+        # Step 1: Open a database connection
+                    # module.method(aa)
+        try:
+            # Step 2: Open the SQL file and read its contents
+            with open(f'./data/{self.sqlfile}', 'r') as sql_file:
+                sql_script = sql_file.read()
+
+            # Step 3: Execute the SQL commands in the file
+            self.cur.executescript(sql_script)
+            # Insert some data into the table
+            #cursor.execute("DELETE FROM users;")
+            # Hash the password before inserting into the database
+            #hashed_password = bcrypt.hashpw('admin'.encode('utf-8'), bcrypt.gensalt())
+            # Insert some data into the table with the hashed password
+            #object.method("string",(tuple1,tuple2,tuple3))
+            #self.cur.execute("INSERT INTO users (username, password, role) VALUES (?, ?, ?)",('admin', hashed_password, 'admin'))
+
+            # Commit the changes
+            self.conn.commit()
+            print("SQL file imported successfully.")
+            
+        except Exception as e:
+            print("Error importing SQL file:", e)
+    
+    def checkIfAdminRegister(self):
         try:
             
             #2 Build the query
-            cursor.execute("SELECT COUNT(*) FROM users where role='admin'")
+            self.cur.execute("SELECT COUNT(*) FROM users where role='admin'")
             
             # Execute the query and fetch the result
-            result = cursor.fetchone()
+            result =  self.cur.fetchone()
             print(result)
             print(result[0])
             # Check if the count is greater than zero
@@ -51,6 +63,7 @@ class DatabaseManager:
         finally:
             
             pass
+    
     def register_user(self, username, password):
         try:
             # Hash the password before inserting into the database
