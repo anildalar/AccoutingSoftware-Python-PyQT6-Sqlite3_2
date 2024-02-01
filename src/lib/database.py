@@ -75,5 +75,17 @@ class DatabaseManager:
             # Unique constraint violated, username already exists
             return False
 
+    def login_user(self, username, password):
+        self.cur.execute("SELECT id, username FROM users WHERE username=?", (username,))
+        user_info = self.cur.fetchone()
+        if user_info:
+            self.cur.execute("SELECT password FROM users WHERE username=?", (username,))
+            hashed_password = self.cur.fetchone()[0]
+            if bcrypt.checkpw(password.encode('utf-8'), hashed_password):
+                return True
+        else:
+            False
+        
+
     def close(self):
         self.conn.close()
