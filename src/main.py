@@ -5,6 +5,8 @@ from PyQt6.QtGui import QIcon
 
 from app.gui.pages.login.login import LoginForm
 from app.gui.pages.register.register import RegistrationForm
+from app.gui.pages.CompanyList import CompanyList
+from app.gui.pages.CompanyCreate import CompanyCreate
 from lib.database import DatabaseManager
 
 class MainWindow(QMainWindow):
@@ -22,7 +24,16 @@ class MainWindow(QMainWindow):
         self.init_ui()
 
     def init_ui(self):
-        if not self.db.checkIfAdminRegister():
+        companycreate_page = CompanyCreate(self.db)
+        self.stacked_widget.addWidget(companycreate_page)
+        self.stacked_widget.setCurrentWidget(companycreate_page)
+        
+        """ companylist_page = CompanyList(self.stacked_widget, self.db)
+        self.stacked_widget.addWidget(companylist_page)
+        self.stacked_widget.setCurrentWidget(companylist_page)
+        print('Show The Company List Page') """
+        
+        """ if not self.db.checkIfAdminRegister():
             registration_form = RegistrationForm(self.stacked_widget, self.db)
             self.stacked_widget.addWidget(registration_form)
             self.stacked_widget.setCurrentWidget(registration_form)
@@ -31,7 +42,7 @@ class MainWindow(QMainWindow):
             login_page = LoginForm(self.stacked_widget, self.db)
             self.stacked_widget.addWidget(login_page)
             self.stacked_widget.setCurrentWidget(login_page)
-            print('Show The Login Form')
+            print('Show The Login Form') """
 
         self.setCentralWidget(self.stacked_widget)
 

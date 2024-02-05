@@ -52,39 +52,22 @@ class RegistrationForm(QWidget):
 
         # Check if passwords match and username is not empty
         if password == self.confirm_password_input.text() and username:
-            # Perform registration in the database
-            if self.db.register_user(username, password):
-                print("Registration successful!")
-
-                 # Show a success popup
-                QMessageBox.information(None, "Registration Success", "User registered successfully!")
-                self.stack_widget.setCurrentIndex(0)  # Switch to Login Page
+            if self.db.checkIfUserExists(username):
+                # Perform registration in the database
+                if self.db.register_user(username, password):
+                    print("Registration successful!")
+                    # Show a success popup
+                    QMessageBox.information(None, "Registration Success", "User registered successfully!")
+                    self.stack_widget.setCurrentIndex(0)  # Switch to Login Page
+                else:
+                    print("Registration failed. Username might already exist.")
+                pass
             else:
-                print("Registration failed. Username might already exist.")
+                # Show a success popup
+                QMessageBox.information(None, "This username is already registered", "This username is already registered")
+                self.stack_widget.setCurrentIndex(0)  # Switch to Login Page
+                pass
+            
         else:
             print("Invalid username or passwords do not match!")
 
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-
-    db = DatabaseManager()  # Create an instance of your DatabaseManager class
-
-    # Assuming you have a QStackedWidget managing multiple pages
-    stacked_widget = QStackedWidget()
-    login_page = LoginForm(stacked_widget, db)
-    registration_page = RegistrationForm(stacked_widget, db)
-    # Add more pages to the stacked widget if needed
-
-    stacked_widget.addWidget(login_page)
-    stacked_widget.addWidget(registration_page)
-    # Add more pages to the stacked widget if needed
-
-    main_window = QWidget()
-    main_layout = QVBoxLayout(main_window)
-    main_layout.addWidget(stacked_widget)
-
-    main_window.setWindowTitle("Registration ")
-    main_window.setGeometry(100, 100, 1200, 800)
-    main_window.show()
-
-    sys.exit(app.exec())

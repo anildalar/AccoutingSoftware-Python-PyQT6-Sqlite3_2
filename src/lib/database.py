@@ -64,6 +64,17 @@ class DatabaseManager:
             
             pass
     
+    def checkIfUserExists(self, username):
+        self.cur.execute("SELECT username FROM users WHERE username=?", (username,))
+        user_info = self.cur.fetchone()
+        print(user_info)
+        print(type(user_info))
+        if user_info:
+            return True
+        else:
+            return False
+        pass
+    
     def register_user(self, username, password):
         try:
             # Hash the password before inserting into the database
@@ -84,8 +95,12 @@ class DatabaseManager:
             if bcrypt.checkpw(password.encode('utf-8'), hashed_password):
                 return True
         else:
-            False
+            return False
         
-
+    def getCompanies(self):
+        self.cur.execute("SELECT * FROM companies")
+        return self.cur.fetchall()
+        pass
+    
     def close(self):
         self.conn.close()
