@@ -24,14 +24,14 @@ class MainWindow(QMainWindow):
         self.init_ui()
 
     def init_ui(self):
-        companycreate_page = CompanyCreate(self.db)
+        """  companycreate_page = CompanyCreate(self.db)
         self.stacked_widget.addWidget(companycreate_page)
-        self.stacked_widget.setCurrentWidget(companycreate_page)
-        
-        """ companylist_page = CompanyList(self.stacked_widget, self.db)
+        self.stacked_widget.setCurrentWidget(companycreate_page) """
+        #ceo = ClassName()
+        companylist_page = CompanyList(self.stacked_widget, self.db)
         self.stacked_widget.addWidget(companylist_page)
         self.stacked_widget.setCurrentWidget(companylist_page)
-        print('Show The Company List Page') """
+        print('Show The Company List Page')
         
         """ if not self.db.checkIfAdminRegister():
             registration_form = RegistrationForm(self.stacked_widget, self.db)

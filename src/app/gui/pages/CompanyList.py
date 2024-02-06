@@ -3,13 +3,15 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QTableWidget, QTableWidgetItem,QApplication, QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QFormLayout, QGroupBox, QStackedWidget,QMessageBox
 from lib.database import DatabaseManager  # Import your DatabaseManager class
 
+from app.gui.pages.CompanyCreate import CompanyCreate
+
 class CompanyList(QWidget):
     def __init__(self, stack_widget, db):
         super().__init__()
 
         self.stack_widget = stack_widget
         self.db = db
-
+        self.table = QTableWidget()
         self.init_ui()
 
     def init_ui(self):
@@ -21,20 +23,20 @@ class CompanyList(QWidget):
         create_company_button.setStyleSheet("background-color: #333; color: white;")
         layout.addRow(create_company_button)
 
-        table = QTableWidget()
-        table.setColumnCount(3)  # Set the number of columns
-        table.setHorizontalHeaderLabels(["#", "Company Name", "Financial Year"])  # Set column headers
+       
+        self.table.setColumnCount(3)  # Set the number of columns
+        self.table.setHorizontalHeaderLabels(["#", "Company Name", "Financial Year"])  # Set column headers
 
         print(self.db.getCompanies())
         # Example data
         data = self.db.getCompanies()
 
         for i, row_data in enumerate(data):
-            table.insertRow(i)
+            self.table.insertRow(i)
             for j, item in enumerate(row_data):
-                table.setItem(i, j, QTableWidgetItem(item))
+                self.table.setItem(i, j, QTableWidgetItem(item))
 
-        layout.addWidget(table)
+        layout.addWidget(self.table)
         
         group_box = QGroupBox("Company List Page")
         group_box.setLayout(layout)
@@ -45,4 +47,19 @@ class CompanyList(QWidget):
 
     def createCompanyButton(self):
         print("Hi")
+        companycreate_page = CompanyCreate(self.db,self)
+        self.stack_widget.addWidget(companycreate_page)
+        self.stack_widget.setCurrentWidget(companycreate_page)
         pass
+    def reload_page(self):
+        self.reload_table_data()
+
+    def reload_table_data(self):
+        self.table.clearContents()
+        data = self.db.getCompanies()
+
+        self.table.setRowCount(len(data))
+
+        for i, row_data in enumerate(data):
+            for j, item in enumerate(row_data):
+                self.table.setItem(i, j, QTableWidgetItem(item))

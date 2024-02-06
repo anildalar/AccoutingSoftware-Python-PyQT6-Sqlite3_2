@@ -102,5 +102,14 @@ class DatabaseManager:
         return self.cur.fetchall()
         pass
     
+    def saveCompany(self,companyName,location):
+        try:
+            self.cur.execute("INSERT INTO companies (name, location) VALUES (?, ?)", (companyName, location))
+            self.conn.commit()
+            return True
+        except sqlite3.IntegrityError:
+            # Unique constraint violated, username already exists
+            return False
+    
     def close(self):
         self.conn.close()
