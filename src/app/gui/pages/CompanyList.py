@@ -1,11 +1,13 @@
 import sys
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QTableWidget, QTableWidgetItem,QApplication, QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QFormLayout, QGroupBox, QStackedWidget,QMessageBox
+from PyQt6.QtWidgets import  QTableWidget, QTableWidgetItem,QApplication, QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QFormLayout, QGroupBox, QStackedWidget,QMessageBox
 from lib.database import DatabaseManager  # Import your DatabaseManager class
 
 from app.gui.pages.CompanyCreate import CompanyCreate
 
 class CompanyList(QWidget):
+    
+    
     def __init__(self, stack_widget, db):
         super().__init__()
 
@@ -13,15 +15,20 @@ class CompanyList(QWidget):
         self.db = db
         self.table = QTableWidget()
         self.init_ui()
-
+        
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key.Key_C:
+            #QMessageBox.information(self, 'Message', 'C key pressed!')
+            self.createCompanyButton()
+            
     def init_ui(self):
         layout = QFormLayout()
         # Increase the vertical spacing between rows
-
-        create_company_button = QPushButton("Create")
-        create_company_button.clicked.connect(self.createCompanyButton)
-        create_company_button.setStyleSheet("background-color: #333; color: white;")
-        layout.addRow(create_company_button)
+        create_company_button = QLabel('<span style="background-color: #333; color: white;"><span style="text-decoration: underline;">C</span>reate</span>')
+        create_company_button.setStyleSheet("color: blue;")
+        create_company_button.setOpenExternalLinks(True)
+        create_company_button.linkActivated.connect(self.createCompanyButton)
+        layout.addWidget(create_company_button)
 
        
         self.table.setColumnCount(3)  # Set the number of columns
@@ -59,7 +66,7 @@ class CompanyList(QWidget):
         data = self.db.getCompanies()
 
         self.table.setRowCount(len(data))
-
+       # for   singular   in  plural        :
         for i, row_data in enumerate(data):
             for j, item in enumerate(row_data):
                 self.table.setItem(i, j, QTableWidgetItem(item))
