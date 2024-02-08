@@ -1,4 +1,5 @@
 import sys
+from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QMessageBox
 from lib.database import DatabaseManager  # Import your DatabaseManager class
 
@@ -8,7 +9,12 @@ class CompanyCreate(QWidget):
         self.db = db
         self.previous_page = previous_page
         self.init_ui()
-
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key.Key_Escape:
+            #QMessageBox.information(self, 'Message', 'ESC key pressed!')
+            self.close()
+            self.previous_page.show()
+            #self.createCompanyButton()
     def init_ui(self):
         layout = QVBoxLayout()
 

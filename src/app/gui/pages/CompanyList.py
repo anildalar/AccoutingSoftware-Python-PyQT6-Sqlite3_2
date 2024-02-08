@@ -4,7 +4,36 @@ from PyQt6.QtWidgets import  QTableWidget, QTableWidgetItem,QApplication, QWidge
 from lib.database import DatabaseManager  # Import your DatabaseManager class
 
 from app.gui.pages.CompanyCreate import CompanyCreate
+class RowWiseTabTable(QTableWidget):
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+    def focusNextPrevChild(self, nextChild: bool):
+        currentRow = self.currentRow()
+        currentColumn = self.currentColumn()
+        rowCount = self.rowCount()
+        columnCount = self.columnCount()
 
+        if nextChild:
+            currentRow += 1
+            if currentRow >= rowCount:
+                currentRow = 0
+                currentColumn += 1
+                if currentColumn >= columnCount:
+                    currentColumn = 0
+        else:
+            currentRow -= 1
+            if currentRow < 0:
+                currentRow = rowCount - 1
+                currentColumn -= 1
+                if currentColumn < 0:
+                    currentColumn = columnCount - 1
+
+        self.setCurrentCell(currentRow, currentColumn)
+        self.selectRow(currentRow)  # Select the entire row
+        return True
+    
 class CompanyList(QWidget):
     
     
@@ -13,13 +42,14 @@ class CompanyList(QWidget):
 
         self.stack_widget = stack_widget
         self.db = db
-        self.table = QTableWidget()
+        self.table = RowWiseTabTable()
         self.init_ui()
         
     def keyPressEvent(self, event):
-        if event.key() == Qt.Key.Key_C:
-            #QMessageBox.information(self, 'Message', 'C key pressed!')
+        if event.modifiers() == Qt.KeyboardModifier.AltModifier and event.key() == Qt.Key.Key_C:
             self.createCompanyButton()
+        elif event.key() == Qt.Key.Key_Enter or event.key() == Qt.Key.Key_Return:
+            self.selectCompanyName()
             
     def init_ui(self):
         layout = QFormLayout()
@@ -38,10 +68,13 @@ class CompanyList(QWidget):
         # Example data
         data = self.db.getCompanies()
 
+        data = self.db.getCompanies()
         for i, row_data in enumerate(data):
             self.table.insertRow(i)
             for j, item in enumerate(row_data):
-                self.table.setItem(i, j, QTableWidgetItem(item))
+                cell_item = QTableWidgetItem(item)
+                cell_item.setFlags(cell_item.flags() & ~Qt.ItemFlag.ItemIsEditable)  # Disable editing
+                self.table.setItem(i, j, cell_item)
 
         layout.addWidget(self.table)
         
@@ -58,6 +91,15 @@ class CompanyList(QWidget):
         self.stack_widget.addWidget(companycreate_page)
         self.stack_widget.setCurrentWidget(companycreate_page)
         pass
+    
+    def selectCompanyName(self):
+        current_row = self.table.currentRow()
+        company_name_item = self.table.item(current_row, 1)  # Assuming company name is in the second column
+        if company_name_item:
+            company_name = company_name_item.text()
+            QMessageBox.warning(self, company_name, company_name)
+            print("Selected company name:", company_name)
+            
     def reload_page(self):
         self.reload_table_data()
 
