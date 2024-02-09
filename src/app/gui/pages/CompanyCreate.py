@@ -1,8 +1,8 @@
 import sys
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QMessageBox
+from PyQt6.QtWidgets import QComboBox,QApplication, QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QMessageBox
 from lib.database import DatabaseManager  # Import your DatabaseManager class
-
+from lib.helper import countries,countries_with_states
 class CompanyCreate(QWidget):
     def __init__(self, db,previous_page):
         super().__init__()
@@ -22,7 +22,21 @@ class CompanyCreate(QWidget):
         self.name_input = QLineEdit()
         layout.addWidget(self.name_label)
         layout.addWidget(self.name_input)
+        
+        self.country_label = QLabel("Country:")
+        self.country_combo = QComboBox()
+        self.country_combo.addItems(countries_with_states)  # Add more countries if needed
+        self.country_combo.setCurrentText("Angola")  # Set default value to India
+        self.country_combo.currentIndexChanged.connect(self.update_states)  # Connect signal to update states
+        layout.addWidget(self.country_label)
+        layout.addWidget(self.country_combo)
 
+        self.state_label = QLabel("State:")
+        self.state_combo = QComboBox()
+        self.update_states()  # Populate states for the default country
+        layout.addWidget(self.state_label)
+        layout.addWidget(self.state_combo)
+        
         self.location_label = QLabel("Location:")
         self.location_input = QLineEdit()
         layout.addWidget(self.location_label)
@@ -34,7 +48,12 @@ class CompanyCreate(QWidget):
 
         self.setLayout(layout)
         self.setWindowTitle("Create Company")
-
+    def update_states(self):
+        selected_country = self.country_combo.currentText()
+        states = countries_with_states.get(selected_country, [])
+        self.state_combo.clear()
+        self.state_combo.addItems(states)
+        
     def create_company(self):
         name = self.name_input.text()
         location = self.location_input.text()

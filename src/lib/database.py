@@ -98,7 +98,7 @@ class DatabaseManager:
             return False
         
     def getCompanies(self):
-        self.cur.execute("SELECT * FROM companies ORDER BY name")
+        self.cur.execute("SELECT * FROM companies ORDER BY company_name")
         return self.cur.fetchall()
         pass
     
